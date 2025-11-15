@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Quelldateien">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Headerdateien">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Ressourcendateien">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Ressourcendateien\imgui">
+      <UniqueIdentifier>{1c2abe9d-a204-4dfb-a1bd-4256b6fdfc86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\imgui">
+      <UniqueIdentifier>{786e6ebd-792e-4176-a573-4370318d43f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\UTIL">
+      <UniqueIdentifier>{fe359cee-5351-42a0-98a0-3fcfad44354e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Engine">
+      <UniqueIdentifier>{86c45737-e6b2-40ae-b3f4-89eb6fd611e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Engine\Dengine">
+      <UniqueIdentifier>{17c1e147-459a-472d-9ddf-fd70a7489453}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\UTIL\Logger">
+      <UniqueIdentifier>{369c26a6-e006-42a0-828e-0ca333acd7a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Engine\camera">
+      <UniqueIdentifier>{6dbdf135-4b07-4480-9d1a-7a8216ba60d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Engine\Level">
+      <UniqueIdentifier>{f103d25d-1eba-43fd-9b5d-322f35b82336}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Engine\Level\Sector">
+      <UniqueIdentifier>{144a0c43-3555-4e09-a34a-b81bbd404db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\Engine\LevelEditor">
+      <UniqueIdentifier>{20eebe6a-1766-40b4-8adf-76099aa99620}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="shader.cpp">
+      <Filter>Headerdateien\UTIL</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Ressourcendateien</Filter>
+    </ClCompile>
+    <ClCompile Include="Dengine.cpp">
+      <Filter>Headerdateien\Engine\Dengine</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Headerdateien\UTIL\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Headerdateien\Engine\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>Headerdateien\Engine\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Sector.cpp">
+      <Filter>Headerdateien\Engine\Level\Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\ImGUI\imgui_demo.cpp">
+      <Filter>Ressourcendateien\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\ImGUI\imgui_draw.cpp">
+      <Filter>Ressourcendateien\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\ImGUI\imgui_tables.cpp">
+      <Filter>Ressourcendateien\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\ImGUI\imgui_widgets.cpp">
+      <Filter>Ressourcendateien\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\ImGUI\imgui_impl_opengl3.cpp">
+      <Filter>Ressourcendateien\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\ImGUI\imgui_impl_glfw.cpp">
+      <Filter>Ressourcendateien\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies\ImGUI\imgui.cpp">
+      <Filter>Ressourcendateien\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="LvlEditor.cpp">
+      <Filter>Headerdateien\Engine\LevelEditor</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dependencies\ImGUI\imgui_impl_glfw.h">
+      <Filter>Headerdateien\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\ImGUI\imgui_impl_opengl3.h">
+      <Filter>Headerdateien\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\ImGUI\imgui_internal.h">
+      <Filter>Headerdateien\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\ImGUI\imstb_rectpack.h">
+      <Filter>Headerdateien\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\ImGUI\imstb_textedit.h">
+      <Filter>Headerdateien\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\ImGUI\imstb_truetype.h">
+      <Filter>Headerdateien\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\ImGUI\imconfig.h">
+      <Filter>Headerdateien\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\ImGUI\imgui.h">
+      <Filter>Headerdateien\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\ImGUI\imgui_impl_opengl3_loader.h">
+      <Filter>Headerdateien\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>Headerdateien\UTIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Dengine.h">
+      <Filter>Headerdateien\Engine\Dengine</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Headerdateien\UTIL\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Headerdateien\Engine\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Headerdateien\Engine\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Sector.h">
+      <Filter>Headerdateien\Engine\Level\Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="LvlEditor.h">
+      <Filter>Headerdateien\Engine\LevelEditor</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="test.frag">
+      <Filter>Quelldateien</Filter>
+    </None>
+    <None Include="test.vert">
+      <Filter>Quelldateien</Filter>
+    </None>
+  </ItemGroup>
+</Project>
