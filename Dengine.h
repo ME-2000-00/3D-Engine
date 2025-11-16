@@ -9,10 +9,11 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_glfw.h"  
 
-#include "2DMode.h"
 #include "camera.h"
 #include "Logger.h"
 #include "Level.h"
+
+#include "LvlEditor.h"
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
@@ -62,6 +63,5 @@ private:
 
 	// vars
 	GLFWwindow* window;
-	Mode2D mode2d;
-
+	LvlEditor lvlEditor;
 };

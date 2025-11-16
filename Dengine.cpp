@@ -41,9 +41,9 @@ void Dengine::openglInit() {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CW);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+    //glFrontFace(GL_CW);
 
     // class inits ig
 
@@ -124,7 +124,7 @@ void Dengine::imguiInit()
 
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-    // <<< SET CONFIG FLAGS RIGHT AWAY (before any NewFrame()) >>>
+     //<<< SET CONFIG FLAGS RIGHT AWAY (before any NewFrame()) >>>
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;   // optional
     //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;       // ENABLE DOCKING BEFORE FIRST NewFrame
     //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;     // optional: allow viewports / platform windows
@@ -134,43 +134,6 @@ void Dengine::imguiInit()
     ImGui::GetStyle().ScaleAllSizes(1.2f);
 
     ImGuiStyle& style = ImGui::GetStyle();
-    ImVec4* colors = style.Colors;
-
-    // Window background: soft dark purple
-    colors[ImGuiCol_WindowBg] = ImVec4(0.10f, 0.07f, 0.15f, 1.00f);
-
-    // Text
-    colors[ImGuiCol_Text] = ImVec4(1.00f, 0.95f, 0.95f, 1.00f);
-    colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.50f, 0.65f, 1.00f);
-
-    // Headers
-    colors[ImGuiCol_Header] = ImVec4(0.60f, 0.20f, 0.80f, 0.60f);
-    colors[ImGuiCol_HeaderHovered] = ImVec4(0.80f, 0.30f, 0.90f, 0.80f);
-    colors[ImGuiCol_HeaderActive] = ImVec4(0.90f, 0.40f, 1.00f, 1.00f);
-
-    // Buttons
-    colors[ImGuiCol_Button] = ImVec4(0.60f, 0.20f, 0.80f, 0.50f);
-    colors[ImGuiCol_ButtonHovered] = ImVec4(0.90f, 0.35f, 1.00f, 0.80f);
-    colors[ImGuiCol_ButtonActive] = ImVec4(1.00f, 0.45f, 1.00f, 1.00f);
-
-    // Frame backgrounds (sliders, input boxes)
-    colors[ImGuiCol_FrameBg] = ImVec4(0.25f, 0.10f, 0.30f, 0.85f);
-    colors[ImGuiCol_FrameBgHovered] = ImVec4(0.35f, 0.15f, 0.45f, 1.00f);
-    colors[ImGuiCol_FrameBgActive] = ImVec4(0.40f, 0.20f, 0.55f, 1.00f);
-
-    // Tabs
-    colors[ImGuiCol_Tab] = ImVec4(0.50f, 0.20f, 0.70f, 0.60f);
-    colors[ImGuiCol_TabHovered] = ImVec4(0.80f, 0.30f, 1.00f, 0.80f);
-    colors[ImGuiCol_TabActive] = ImVec4(0.95f, 0.40f, 1.00f, 1.00f);
-
-    // Slider grab
-    colors[ImGuiCol_SliderGrab] = ImVec4(1.00f, 0.60f, 1.00f, 0.90f);
-    colors[ImGuiCol_SliderGrabActive] = ImVec4(1.00f, 0.75f, 1.00f, 1.00f);
-
-    // Accent
-    colors[ImGuiCol_TextSelectedBg] = ImVec4(0.90f, 0.30f, 0.90f, 0.35f);
-    colors[ImGuiCol_CheckMark] = ImVec4(1.00f, 0.60f, 1.00f, 1.00f);
-    colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.40f, 1.00f, 1.00f);
 
     // square corners
     style.WindowRounding = 0.0f;
@@ -354,17 +317,9 @@ void Dengine::imguiRender()
 
             }
             if (ImGui::MenuItem("Reload Level")) {
-                DengineDefs::DD_CurrentLevel = mode2d.get_Level();
                 
-				DengineDefs::DD_camera.pos = mode2d.get_SpawnPoint();
-
-                //for (Sector s : DengineDefs::DD_CurrentLevel.sectors) {
-                //    for (Wall& wall : s.walls) {
-
-                //        Logger::Log(LogLevel::INFO, std::to_string(wall.start.x));
-                //        Logger::Log(LogLevel::INFO, std::to_string(wall.start.y));
-                //    }
-                //}
+				DengineDefs::DD_CurrentLevel = lvlEditor.get_Level();
+				DengineDefs::DD_camera.pos = glm::vec3(lvlEditor.plr_pos.x, 0, lvlEditor.plr_pos.y);
 
             }
 
@@ -419,5 +374,7 @@ void Dengine::imguiRender()
 
         ImGui::End();
     }
+
+	lvlEditor.render();
 }
 

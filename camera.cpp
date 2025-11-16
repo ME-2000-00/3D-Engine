@@ -7,6 +7,8 @@
 #include "camera.h"
 #include <GLFW/glfw3.h>
 
+
+// add screen texture
 Camera::Camera(glm::vec3 position, float fovy, float aspect, float near, float far)
     : pos(position), yaw(90.0f), pitch(0.0f), speed(0.001f) {
     up = glm::vec3(0.0f, 1.0f, 0.0f);
