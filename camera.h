@@ -30,11 +30,11 @@ public:
     void update();
     void rotate_pitch(float y_angle);
     void rotate_yaw(float y_angle);
-    void move_left(float vel);
-    void move_right(float vel);
-    void move_up(float vel);
-    void move_down(float vel);
-    void move_forward(float vel);
-    void move_backward(float vel);
+    void move_left(float vel, float dt);
+    void move_right(float vel, float dt);
+    void move_up(float vel, float dt);
+    void move_down(float vel, float dt);
+    void move_forward(float vel, float dt);
+    void move_backward(float vel, float dt);
     void update_rotation(double xpos, double ypos);
 };

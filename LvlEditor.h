@@ -4,6 +4,8 @@
 #include "Logger.h"
 #include "Level.h"
 #include "Sector.h"
+#include <GLFW/glfw3.h>
+#include "triangulate.h"
 
 #include <algorithm>
 #include <iostream>
@@ -12,52 +14,49 @@
 #include <memory>
 #include <string>
 
-
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtc/constants.hpp>
 #include <gtc/type_ptr.hpp>
 
-struct Wall2D {
-	glm::vec2 normal;
-	glm::vec2 start;
-	glm::vec2 end;
-};
-
-
 class LvlEditor {
 public:
 	LvlEditor();
+	int world_scale;
+	int unit_scale;
+	int window_width, window_height;
 
+	void openglRender();
 	void render();
+	void update(glm::vec3 cam_pos, glm::vec3 cam_dir);
+	void ImGuirender();
+
+	void define_wall_start();
+	void define_wall_end();
+	
+	void sellect_sector();
+
 	ImVec2 toImVec2(const glm::vec2& vec) { return ImVec2(vec.x, vec.y); };
 	glm::vec2 toglmvec2(const ImVec2& vec) { return glm::vec2(vec.x, vec.y); };
+	Level get_Level();
 
 
-	ImVec2 SnapToGrid(const ImVec2& point, float gridSpacing) {
-		ImVec2 snapped;
-		snapped.x = round((point.x - panOffset.x) / gridSpacing) * gridSpacing + panOffset.x;
-		snapped.y = round((point.y - panOffset.y) / gridSpacing) * gridSpacing + panOffset.y;
-		return snapped;
-	}
+	ImVec2 SnapToGrid(const ImVec2& point, float gridSpacing);
+	std::vector<Sector> lvlSectors;
 
-	Level get_Level() { return lvl; }
+	glm::vec2 intersection;
+	glm::vec2 plr_pos;
+	glm::vec2 point;
 
-	glm::vec2 plr_pos = glm::vec2(2.0f, 2.0f);
+	float ceeling, floor;
 
 private:
-	int worldScale;
-	int windowUnitSize;
 
-	ImVec2 panOffset = ImVec2(0, 0);
-	bool panning = false;
-	ImVec2 panStart;
-
-	bool placingLine = false;
-
+	glm::vec2 panOffset = glm::vec2(0.0f, 0.0f);
 	Level lvl;
+	Wall2D current_wall;
 
 	std::vector<Wall2D> walls;
-	int wallp1x, wallp1y;
-	int wallp2x, wallp2y;
+	bool ghost_wall = false;
+
 };

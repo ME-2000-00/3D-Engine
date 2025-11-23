@@ -55,28 +55,28 @@ void Camera::rotate_yaw(float y_angle) {
     yaw -= y_angle;
 }
 
-void Camera::move_left(float vel) {
-    pos -= right * vel * speed;
+void Camera::move_left(float vel, float dt) {
+    pos -= (right * vel * speed) * (dt * 100);
 }
 
-void Camera::move_right(float vel) {
-    pos += right * vel * speed;
+void Camera::move_right(float vel, float dt) {
+    pos += (right * vel * speed) * (dt * 100);
 }
 
-void Camera::move_up(float vel) {
-    pos += up * vel * speed;
+void Camera::move_up(float vel, float dt) {
+    pos += (up * vel * speed) * (dt * 100);
 }
 
-void Camera::move_down(float vel) {
-    pos -= up * vel * speed;
+void Camera::move_down(float vel, float dt) {
+    pos -= (up * vel * speed) * (dt * 100);
 }
 
-void Camera::move_forward(float vel) {
-    pos += forward * vel * speed;
+void Camera::move_forward(float vel, float dt) {
+    pos += (forward * vel * speed) * (dt * 100);
 }
 
-void Camera::move_backward(float vel) {
-    pos -= forward * vel * speed;
+void Camera::move_backward(float vel, float dt) {
+    pos -= (forward * vel * speed) * (dt * 100);
 }
 
 void Camera::update_rotation(double xpos, double ypos) {

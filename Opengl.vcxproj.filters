@@ -140,6 +140,9 @@
     <ClInclude Include="LvlEditor.h">
       <Filter>Headerdateien\Engine\LevelEditor</Filter>
     </ClInclude>
+    <ClInclude Include="triangulate.h">
+      <Filter>Headerdateien\Engine\Level\Sector</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="test.frag">
