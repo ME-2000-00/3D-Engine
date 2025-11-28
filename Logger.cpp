@@ -16,6 +16,7 @@ void Logger::Log(LogLevel level, const std::string& message)
     case LogLevel::INFO:    prefix = "[INFO] ";   msg.r = 200; msg.g = 200; msg.b = 200; break;
     case LogLevel::WARNING: prefix = "[WARN] ";   msg.r = 255; msg.g = 200; msg.b = 20;  break;
     case LogLevel::ERROR:   prefix = "[ERROR] ";  msg.r = 255; msg.g = 20;  msg.b = 20;  break;
+    case LogLevel::IMPORTANT:   prefix = "[IMPORTANT] ";  msg.r = 20; msg.g = 255;  msg.b = 20;  break;
     }
 
     std::string fullMessage = prefix + message;
@@ -26,4 +27,8 @@ void Logger::Log(LogLevel level, const std::string& message)
 
     // Print to console
     std::cout << fullMessage << std::endl;
+}
+
+void Logger::Spacer() {
+    Logger::Log(LogLevel::INFO, "------------------------------------------");
 }

@@ -140,8 +140,8 @@
     <ClInclude Include="LvlEditor.h">
       <Filter>Headerdateien\Engine\LevelEditor</Filter>
     </ClInclude>
-    <ClInclude Include="triangulate.h">
-      <Filter>Headerdateien\Engine\Level\Sector</Filter>
+    <ClInclude Include="util.h">
+      <Filter>Headerdateien\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,7 @@
 #include "Level.h"
 
 #include "LvlEditor.h"
+#include "util.h"
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
@@ -99,7 +100,7 @@ public:
 	bool ENGINE_MODE = true;
 	bool LEVEL_EDITOR_MODE = false;
 
-    bool defined_start_wall = false;
+    //bool defined_start_wall = false;
     bool CANT_USE_MOUSE = true;
 	// ints
 

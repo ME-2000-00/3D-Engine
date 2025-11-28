@@ -4,107 +4,324 @@
 
 #include "LvlEditor.h"
 
-bool pointInPolygon(const glm::vec2& p, const std::vector<Wall2D>& polygon) {
-	bool inside = false;
-	size_t n = polygon.size();
-	for (size_t i = 0, j = n - 1; i < n; j = i++) {
-		glm::vec2 a = polygon[i].start;
-		glm::vec2 b = polygon[i].end;
-
-		if (a.y == b.y) continue; // skip horizontal edges to avoid divide by zero
-
-		bool intersect = ((a.y > p.y) != (b.y > p.y)) &&
-			(p.x < (b.x - a.x) * (p.y - a.y) / (b.y - a.y) + a.x);
-
-		if (intersect) inside = !inside;
-	}
-	return inside;
-}
-
-
-ImVec2 LvlEditor::SnapToGrid(const ImVec2& point, float gridSpacing)
-{
-	ImVec2 snapped;
-	snapped.x = round((point.x - panOffset.x) / gridSpacing) * gridSpacing + panOffset.x;
-	snapped.y = round((point.y - panOffset.y) / gridSpacing) * gridSpacing + panOffset.y;
-	return snapped;
-}
-Wall make_wall(Wall2D& wall2d, int& unit_scale) {
-	std::mt19937 rng(std::random_device{}());
-	std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-
-
-	Wall wall;
-	wall.start = glm::vec2(wall2d.start.x / unit_scale, wall2d.start.y / unit_scale);
-	wall.end = glm::vec2(wall2d.end.x / unit_scale, wall2d.end.y / unit_scale);
-	Sector::compue_and_set_normal(wall);
-
-	wall.portal = wall2d.portal;
-
-	wall.r = dist(rng);
-	wall.g = dist(rng);
-	wall.b = dist(rng);
-
-	return wall;
-}
 
 LvlEditor::LvlEditor()
 {
-	world_scale = 100;
-	unit_scale = 40;
+	//Sector S;
+	//S.points.push_back(glm::vec2(4.0f, 4.0f));
+	//S.points.push_back(glm::vec2(8.0f, 4.0f));
+	//S.points.push_back(glm::vec2(8.0f, 8.0f));
+	//S.points.push_back(glm::vec2(4.0f, 8.0f));
+	//S.rebuild();
+
+	//S.portal_ids.push_back({ 0,1 });
+	//S.portal_ids.push_back({ 2,3 });
+
+	//lvl.sectors.push_back(std::move(S));
+
+
+
+	//UTIL::polygonWall P;
+
+	//P.start   = glm::vec2(4.0f * unit_scale, 4.0f * unit_scale);
+	//P.end     = glm::vec2(8.0f * unit_scale, 4.0f * unit_scale);
+	//P.normal  = UTIL::compue_normal(P.start, P.end      );
+	//P.Inormal = UTIL::compue_normal(P.start, P.end, true);
+	//P.center  = (P.start + P.end) * 0.5f;
+	//P.ids_in_Sector = { 0, 1 };
+
+	//walls.push_back(std::move(P));
 }
 
-void renderScreenGrid(int windowWidth, int windowHeight, int world_scale = 100, int unit_scale = 40)
+void LvlEditor::renderSectors() {
+
+	glLineWidth(3.0f);
+
+	// walls themselves
+
+	glBegin(GL_LINES);
+	for (const UTIL::polygonWall& wall : walls) {
+		if (wall.is_portal) {
+			glColor3f(0.7f, 0.0f, 0.7f);
+		}
+		else {
+			glColor3f(0.7f, 0.0f, 0.0f);
+		}
+		glVertex2f(wall.start.x, wall.start.y);
+		glVertex2f(wall.end.x  , wall.end.y  );
+	}
+	glEnd();
+
+	// normals (double if portal)
+
+	for (const UTIL::polygonWall& wall : walls) {
+		glColor3f(0.0f, 0.8f, 0.2f);
+		glBegin(GL_LINES);
+
+		float scale = 10.0f; // in pixels
+
+		glVertex2f(wall.center.x                        , wall.center.y                        );
+		glVertex2f(wall.center.x + wall.normal.x * scale, wall.center.y + wall.normal.y * scale);
+
+		if (wall.is_portal) {
+			glVertex2f(wall.center.x, wall.center.y);
+			glVertex2f(wall.center.x + wall.Inormal.x * scale, wall.center.y + wall.Inormal.y * scale);
+		}
+
+
+		glEnd();
+
+
+		glPointSize(7);
+		glColor3f(0.0f, 0.2f, 0.8f);
+		glBegin(GL_POINTS);
+
+		glVertex2f(wall.start.x, wall.start.y);
+		glVertex2f(wall.end.x  , wall.end.y  );
+
+		glEnd();
+	}
+
+}
+
+
+
+
+
+// TODO: finish rendering logic
+// TODO: finish porting   logic
+// TODO: finish lvl      editor
+void LvlEditor::openglRender()
+{
+	glPointSize(3);
+	glColor3f(0.2, 0.2, 0.2);
+	glBegin(GL_POINTS);
+
+	//Logger::Log(LogLevel::INFO, std::to_string(panOffset.x));
+	//Logger::Log(LogLevel::INFO, std::to_string(panOffset.y));
+
+	for (int x = 0; x < WORLD::world_scale; x++) {
+		for (int y = 0; y < WORLD::world_scale; y++) {
+			glVertex2f(x * WORLD::unit_scale + panOffset.x, y * WORLD::unit_scale + panOffset.y);
+		}
+	}
+
+	glEnd();
+
+	// render walls
+	renderSectors();
+
+
+	if (LVLEDITOR::draw_portal_selection_line) {
+		glLineWidth(1.0f);
+		glColor3f(0.7f, 0.0f, 0.7f);
+		glBegin(GL_LINES);
+		glVertex2f(LVLEDITOR::last_mouse_pos.x, LVLEDITOR::last_mouse_pos.y);
+		glVertex2f(mouse.x, mouse.y);
+		glEnd();
+		glLineWidth(3.0f);
+
+
+		for (UTIL::polygonWall& wall : walls) {
+			glm::vec2 point;
+			bool intersection = UTIL::lineLineIntersection(LVLEDITOR::last_mouse_pos, mouse, wall.start, wall.end, point);
+
+			if (intersection) {
+				glColor4f(0.7f, 0.0f, 0.7f, 0.6f);
+				glBegin(GL_LINES);
+				glVertex2f(wall.start.x, wall.start.y);
+				glVertex2f(wall.end.x, wall.end.y);
+				glEnd();
+
+				if (LVLEDITOR::make_portals && LVLEDITOR::draw_portal_selection_line) {
+					wall.is_portal = true;
+				}
+			}
+		}
+	}
+
+	// render hovered sector
+
+
+	// for hovering a sector
+	for (Sector& sector : lvlSectors) {
+		LVLEDITOR::hovering_sector = UTIL::pointInPolygon(mouse, sector.points);
+
+		if ((LVLEDITOR::hovering_sector && lvlSectors.size() > 0) || sector.selected) {
+
+			glDisable(GL_DEPTH_TEST);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDepthMask(GL_FALSE);
+
+			glColor4f(0.2f, 0.8f, 1.0f, 0.4f);
+			glBegin(GL_TRIANGLES);
+			for (const auto& t : sector.triangles) {
+				glVertex2f(t.a.x * WORLD::unit_scale, t.a.y * WORLD::unit_scale);
+				glVertex2f(t.b.x * WORLD::unit_scale, t.b.y * WORLD::unit_scale);
+				glVertex2f(t.c.x * WORLD::unit_scale, t.c.y * WORLD::unit_scale);
+			}
+			glEnd();
+
+			glDepthMask(GL_TRUE);
+			glDisable(GL_BLEND);
+			glEnable(GL_DEPTH_TEST);
+
+		}
+
+	}
+
+
+
+
+
+
+
+
+
+
+	glPointSize(5);
+	glColor3f(0.8, 0.8, 0.0);
+	glBegin(GL_POINTS);
+	glVertex2f(plr_pos.x * WORLD::unit_scale, plr_pos.y * WORLD::unit_scale);
+	glEnd();
+}
+
+
+void LvlEditor::MouseFunctionalityUtil(const int MouseState)
+{
+	switch (MouseState) {
+	default: 
+		LVLEDITOR::draw_portal_selection_line = false;
+		break;
+
+		// MIDDLE clock
+	case UTIL::MIDDLE:
+
+		break;
+		// LEFT click
+	case UTIL::LEFT:
+		// place walls
+		if (LVLEDITOR::is_first_wall) {
+
+			UTIL::polygonWall CW;
+			CW.start = UTIL::SnapToGrid(mouse);
+			CW.end = CW.start;
+
+			LVLEDITOR::current_wall = CW;
+
+			LVLEDITOR::is_first_wall = false;
+		}
+		else {
+			LVLEDITOR::current_wall.end = UTIL::SnapToGrid(mouse);
+
+			LVLEDITOR::current_wall.normal = UTIL::compute_normal(LVLEDITOR::current_wall.start, LVLEDITOR::current_wall.end);
+			LVLEDITOR::current_wall.Inormal = UTIL::compute_normal(LVLEDITOR::current_wall.start, LVLEDITOR::current_wall.end, true);
+			LVLEDITOR::current_wall.center = (LVLEDITOR::current_wall.start + LVLEDITOR::current_wall.end) * 0.5f;
+			//LVLEDITOR::current_wall.ids_in_Sector = { 0, 1 };
+			LVLEDITOR::current_wall.id = walls.size();
+
+			walls.push_back(LVLEDITOR::current_wall);
+
+			LVLEDITOR::is_first_wall = true;
+
+			lvlSectors = get_sectors(walls, WORLD::unit_scale);
+		}
+
+
+
+
+
+		break;
+		// RIGHT click
+	case UTIL::RIGHT:
+		// turn walls into portals
+		// 
+		// loop through all walls
+		// line line intersection algoythm because a line is drawn that intersects walls
+		// if positive turn wall into a portal
+		// add the ids to sector relative from sector?
+
+		// collision checks will be done in openglrender (yes but only for visuals) and on second click
+
+		// eabling the draw selection line
+		if (!LVLEDITOR::draw_portal_selection_line) {
+			LVLEDITOR::last_mouse_pos = mouse;
+		}
+		else {
+			LVLEDITOR::last_mouse_pos = mouse;
+			// collision check here? idk, or on button press in imgui or on keyboard, we'll see
+		}
+		LVLEDITOR::draw_portal_selection_line = !LVLEDITOR::draw_portal_selection_line;
+		LVLEDITOR::make_portals = !LVLEDITOR::make_portals;
+
+		break;
+	}
+}
+
+
+
+void LvlEditor::ImGuirender() {
+	ImGui::Begin("Debug");
+
+	ImGui::InputFloat("Mouse X", &mouse.x);
+	ImGui::InputFloat("Mouse Y", &mouse.y);
+
+	ImGui::Separator();
+
+	ImGui::SliderFloat("Plr X", &plr_pos.x, 0, WORLD::world_scale);
+	ImGui::SliderFloat("Plr Y", &plr_pos.y, 0, WORLD::world_scale);
+
+	ImGui::Separator();
+
+	ImGui::Text("Sectors need to be build first");
+
+	if (ImGui::Button("turn overlaps into portals")) {
+
+		// TODO: make sure that the pointers are a variable
+		// current issue is comparison makes all walls portals  obviously 
+		for (UTIL::polygonWall& wall1 : walls) {
+			for (UTIL::polygonWall& wall2 : walls) {
+				if (UTIL::compare_walls(wall1, wall2)) {
+					if (wall1.id == wall2.id) {
+						continue;
+					}
+
+					Logger::Log(LogLevel::INFO, "merged walls");
+
+					wall1.is_portal = true;
+					wall2.is_portal = true;
+				}
+			
+			}
+		}
+	}
+
+
+
+	ImGui::Separator();
+
+	if (ImGui::Button("build sectors")) {
+		lvl.sectors = get_sectors(walls, WORLD::unit_scale);
+	}
+
+	ImGui::End();
+}
+
+
+void LvlEditor::render()
 {
 	// Push 2D projection
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrtho(0, windowWidth, 0, windowHeight, -1, 1);
+	glOrtho(0, window_width, 0, window_height, -1, 1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
 
-	float half_world_px = (world_scale * unit_scale) * 0.5f;
-
-	// Minor lines
-	glLineWidth(1.0f);
-	glColor3f(0.2f, 0.2f, 0.2f);
-	glBegin(GL_LINES);
-	for (int i = -world_scale / 2; i <= world_scale / 2; i++) {
-		if (i % 5 != 0) {
-			float x = windowWidth / 2 + i * unit_scale;
-			float y = windowHeight / 2 + i * unit_scale;
-
-			// vertical
-			glVertex2f(x, windowHeight / 2 - half_world_px);
-			glVertex2f(x, windowHeight / 2 + half_world_px);
-
-			// horizontal
-			glVertex2f(windowWidth / 2 - half_world_px, x);
-			glVertex2f(windowWidth / 2 + half_world_px, x);
-		}
-	}
-	glEnd();
-
-	// Major lines
-	glLineWidth(3.0f);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glBegin(GL_LINES);
-	for (int i = -world_scale / 2; i <= world_scale / 2; i += 5) {
-		float x = windowWidth / 2 + i * unit_scale;
-		float y = windowHeight / 2 + i * unit_scale;
-
-		// vertical
-		glVertex2f(x, windowHeight / 2 - half_world_px);
-		glVertex2f(x, windowHeight / 2 + half_world_px);
-
-		// horizontal
-		glVertex2f(windowWidth / 2 - half_world_px, x);
-		glVertex2f(windowWidth / 2 + half_world_px, x);
-	}
-	glEnd();
+	openglRender();
 
 	// Restore 3D matrices
 	glPopMatrix();
@@ -113,239 +330,10 @@ void renderScreenGrid(int windowWidth, int windowHeight, int world_scale = 100, 
 	glMatrixMode(GL_MODELVIEW);
 }
 
-std::vector<Sector> get_sectors(std::vector<Wall2D>& walls2D, int unit_scale) {
-
-	std::vector<Sector> sectors;
-	Sector sector;
-	Wall first;
-	bool start_wall = true;
-
-
-
-	for (Wall2D wall2D : walls2D) {
-		Wall wall = make_wall(wall2D, unit_scale);
-		sector.walls.push_back(wall);
-		sector.walls2D.push_back(wall2D);
-
-		if (start_wall) {
-			first = wall;
-			start_wall = false;
-		}
-
-		if (!start_wall && first.start == wall.end) {
-			sectors.push_back(sector);
-			sector.walls.clear();
-			sector.walls2D.clear();
-
-			start_wall = true;
-		}
-	}
-
-	return sectors;
-}
-
-void LvlEditor::sellect_sector() {
-	// for hovering a sector
-	for (Sector& sector : lvlSectors) {
-		bool hover = pointInPolygon(intersection, sector.walls2D);
-
-		if (hover) {
-			sector.selected = true;
-			ceeling = sector.ceeling;
-			floor = sector.floor;
-		}
-		else if (!hover) {
-			sector.selected = false; // optionally deselect if not hovering
-		}
-	}
-
-
-}
-
-
-
-
-
-
-
-
-void LvlEditor::openglRender()
-{
-	point = toglmvec2(SnapToGrid(ImVec2(intersection.x, intersection.y), unit_scale));
-	glDisable(GL_DEPTH_TEST);
-	// make the editor 3D xP
-	
-	// world grid
-	renderScreenGrid(window_width, window_height, world_scale, unit_scale);
-
-
-	for (Wall2D &wall : walls) {
-		glColor3f(0.2f, 0.2f, 0.8f);
-		glLineWidth(3.0f);
-
-		glBegin(GL_LINES);
-			glVertex2f(wall.start.x, wall.start.y);
-			glVertex2f(wall.end.x, wall.end.y);
-		glEnd();
-
-
-
-		glm::vec2 center = (wall.start + wall.end) * 0.5f;
-		float normalScale = 10.0f; // adjust for visibility
-
-		glColor3f(0.2f, 0.8f, 0.2f);
-		glLineWidth(2.0f);
-
-		glBegin(GL_LINES);
-		glVertex2f(center.x, center.y);
-		glVertex2f(center.x + wall.normal.x * normalScale, center.y + wall.normal.y * normalScale);
-		glEnd();
-
-	}
-
-	if (ghost_wall) {
-		glColor3f(0.2f, 0.2f, 0.8f);
-		glLineWidth(2.0f);
-
-		glBegin(GL_LINES);
-			glVertex2f(current_wall.start.x, current_wall.start.y);
-			glVertex2f(point.x, point.y);
-		glEnd();
-
-		glm::vec2 e1 = point - current_wall.start; // vector along the wall
-
-		if (glm::length(e1) < 1e-6f) {
-			current_wall.normal = glm::vec2(0.0f, 0.0f); // degenerate wall
-			return;
-		}
-
-		glm::vec2 normal(-e1.y, e1.x); // 90° CCW
-		glm::vec2 normal2 = glm::normalize(normal);
-
-
-		glm::vec2 center = (current_wall.start + point) * 0.5f;
-		float normalScale = 10.0f; // adjust for visibility
-
-		glColor3f(0.2f, 0.8f, 0.2f);
-		glLineWidth(2.0f);
-
-		glBegin(GL_LINES);
-		glVertex2f(center.x, center.y);
-		glVertex2f(center.x + normal2.x * normalScale, center.y + normal2.y * normalScale);
-		glEnd();
-	}
-
-	// for hovering a sector
-	for (Sector sector : lvlSectors) {
-		bool hover = pointInPolygon(intersection, sector.walls2D);
-		
-		if ((hover && lvlSectors.size() > 0) || sector.selected) {
-
-			std::vector<glm::vec2> vertices;
-			for (Wall2D wall : sector.walls2D)
-				vertices.push_back(wall.start);
-
-			std::vector<Tri> tris = triangulate(vertices);
-
-			glDisable(GL_DEPTH_TEST);
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glDepthMask(GL_FALSE);
-			glFrontFace(GL_CW);
-
-			glColor4f(0.2f, 0.8f, 1.0f, 0.4f);
-			glBegin(GL_TRIANGLES);
-			for (const auto& t : tris) {
-				glVertex2f(t.a.x, t.a.y);
-				glVertex2f(t.b.x, t.b.y);
-				glVertex2f(t.c.x, t.c.y);
-			}
-			glEnd();
-
-			glDepthMask(GL_TRUE);
-			glDisable(GL_BLEND);
-			glEnable(GL_DEPTH_TEST);
-			glFrontFace(GL_CCW);
-
-		}
-
-	}
-
-
-	// mouse pos
-	glPointSize(10);           // set pixel size of the dot
-	glColor3f(1.0f, 1.0f, 0.0f);
-
-
-	glBegin(GL_POINTS);
-		glVertex2f(plr_pos.x, plr_pos.y);
-	glEnd();
-	glEnable(GL_DEPTH_TEST);
-}
-
-void LvlEditor::define_wall_start()
-{
-	// defines start point of a new wall
-	current_wall.start = glm::vec2(point.x, point.y);
-	ghost_wall = true;
-}
-
-void LvlEditor::ImGuirender() {
-	ImGui::Begin("Edit Values");
-
-	ImGui::InputFloat("Floor", &floor);
-	ImGui::InputFloat("Ceeling", &ceeling);
-
-	if (ImGui::Button("Set new Sector floor and ceiling")) {
-		for (Sector& sector : lvlSectors) { // note the '&' here
-			if (sector.selected) {
-				sector.set_ceeling(ceeling);
-				sector.set_floor(floor);
-			}
-		}
-	}
-
-	ImGui::End();
-
-}
-
-
-
-
-void LvlEditor::define_wall_end()
-{
-	// defines end point of a new wall
-	current_wall.end = glm::vec2(point.x, point.y);
-	Wall wall3D = make_wall(current_wall, unit_scale);
-	Sector::compue_and_set_normal(wall3D);
-
-	current_wall.normal = wall3D.normal;
-	ghost_wall = false;
-
-	walls.push_back(current_wall);
-
-	// update sectors
-	lvlSectors = get_sectors(walls, unit_scale);
-}
-
-
-
-void LvlEditor::render()
-{
-	openglRender();
-}
-
-
-
-
 
 Level LvlEditor::get_Level() 
 {
-	lvl.sectors.clear();
-
-	for (Sector sector : lvlSectors) {
-		lvl.sectors.push_back(sector);
-	}
+	lvl.sectors = get_sectors(walls, WORLD::unit_scale);
 
 	return lvl;
 }

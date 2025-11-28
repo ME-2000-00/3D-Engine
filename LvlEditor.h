@@ -4,8 +4,9 @@
 #include "Logger.h"
 #include "Level.h"
 #include "Sector.h"
+#include "util.h"
+
 #include <GLFW/glfw3.h>
-#include "triangulate.h"
 
 #include <algorithm>
 #include <iostream>
@@ -22,41 +23,42 @@
 class LvlEditor {
 public:
 	LvlEditor();
-	int world_scale;
-	int unit_scale;
 	int window_width, window_height;
+
+	glm::vec2 panOffset = glm::vec2(0.0f, 0.0f);
+	glm::vec2 panStartPoint = glm::vec2(0.0f, 0.0f);
+	bool start_panning = false;
 
 	void openglRender();
 	void render();
-	void update(glm::vec3 cam_pos, glm::vec3 cam_dir);
 	void ImGuirender();
-
-	void define_wall_start();
-	void define_wall_end();
-	
-	void sellect_sector();
+	void renderSectors();
+	void MouseFunctionalityUtil(const int MouseState);
 
 	ImVec2 toImVec2(const glm::vec2& vec) { return ImVec2(vec.x, vec.y); };
 	glm::vec2 toglmvec2(const ImVec2& vec) { return glm::vec2(vec.x, vec.y); };
 	Level get_Level();
 
 
-	ImVec2 SnapToGrid(const ImVec2& point, float gridSpacing);
 	std::vector<Sector> lvlSectors;
+	std::vector<UTIL::polygonWall> walls;
 
-	glm::vec2 intersection;
+	glm::vec2 mouse;
 	glm::vec2 plr_pos;
-	glm::vec2 point;
 
 	float ceeling, floor;
 
 private:
 
-	glm::vec2 panOffset = glm::vec2(0.0f, 0.0f);
 	Level lvl;
-	Wall2D current_wall;
-
-	std::vector<Wall2D> walls;
-	bool ghost_wall = false;
 
 };
+
+
+
+// updates all the sectors
+inline void update_sectors(std::vector<Sector>& sectors) {
+	for (Sector& sector : sectors) {
+		sector.rebuild();
+	}
+}

@@ -7,7 +7,8 @@
 enum class LogLevel {
 	INFO,
 	WARNING,
-	ERROR
+	ERROR,
+	IMPORTANT
 };
 
 struct Message {
@@ -19,6 +20,7 @@ struct Message {
 class Logger {
 public:
 	static void Log(LogLevel level, const std::string& msg);
+	static void Spacer();
 	static const std::vector<Message>& GetMessages() { return messages; }
 
 private:

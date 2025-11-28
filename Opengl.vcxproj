@@ -177,7 +177,7 @@
     <ClInclude Include="LvlEditor.h" />
     <ClInclude Include="Sector.h" />
     <ClInclude Include="shader.h" />
-    <ClInclude Include="triangulate.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="test.frag" />

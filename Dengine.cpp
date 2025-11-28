@@ -37,18 +37,12 @@ void Dengine::openglInit() {
     // Set the clear color (RGBA format, values range from 0.0f to 1.0f)
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);  // Dark cyan, for example
 
-    // def lighting
-    //glEnable(GL_LIGHTING);
-    //glEnable(GL_LIGHT0);
-    //glEnable(GL_NORMALIZE);
-    //glEnable(GL_COLOR_MATERIAL);
-
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    //glEnable(GL_CULL_FACE);
-    //glCullFace(GL_BACK);
-    //glFrontFace(GL_CCW);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     // class inits ig
 
@@ -281,19 +275,18 @@ void Dengine::MouseButtonCallback(GLFWwindow* window, int button, int action, in
 
 
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && !engine->CANT_USE_MOUSE && engine->LEVEL_EDITOR_MODE) {
-        if (!engine->defined_start_wall) {
-            engine->lvlEditor.define_wall_start();
-            engine->defined_start_wall = true;
-        }
-        else {
-            engine->lvlEditor.define_wall_end();
-            engine->defined_start_wall = false;
-        }
+        engine->lvlEditor.MouseFunctionalityUtil(UTIL::LEFT);
     }
 
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS && !engine->CANT_USE_MOUSE && engine->LEVEL_EDITOR_MODE) {
-        engine->lvlEditor.sellect_sector();
+        engine->lvlEditor.MouseFunctionalityUtil(UTIL::RIGHT);
     }
+
+    if (button == GLFW_MOUSE_BUTTON_MIDDLE && action == GLFW_PRESS && !engine->CANT_USE_MOUSE && engine->LEVEL_EDITOR_MODE) {
+        engine->lvlEditor.MouseFunctionalityUtil(UTIL::MIDDLE);
+
+    }
+
 }
 
 // In initialization:
@@ -315,7 +308,7 @@ void Dengine::update()
     // convert to framebuffer coords if needed (see next section)
     mouseY = height - mouseY; // invert Y for your editor coords
 
-    lvlEditor.intersection = glm::vec2(mouseX, mouseY);
+    lvlEditor.mouse = glm::vec2(mouseX, mouseY);
 
     profiler.Update(dt);
 
@@ -446,10 +439,6 @@ void Dengine::imguiRender()
             const auto& logs = Logger::GetMessages();
             for (const auto& msg : logs)
             {
-                // TODO: add different colors for different types of logs
-                // this did not work for some reason
-                //if (msg.rfind("[WARNING]"))
-
                 ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(msg.r, msg.g, msg.b, 255));
 
                 ImGui::TextUnformatted(msg.msg.c_str());
